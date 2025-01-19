@@ -34,8 +34,9 @@ const initializeWebSocket = (url) => {
 
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
+    console.log("data.............", data);
     if (data && data.status === "success") {
-      updateMessageBox(data.data);
+      updateMessageBox(data.data.english);
     } else {
       updateMessageBox("Error: " + (data.message || "Unknown error"));
     }
@@ -59,12 +60,23 @@ const updateMessageBox = (newMessage) => {
 };
 
 const sendMessage = (message) => {
-  if (socket && socket.readyState === WebSocket.OPEN) {
-    socket.send(message);
-    console.log("Message sent:", message);
-  } else {
-    console.warn("WebSocket is not open. Cannot send message:", message);
-  }
+  chrome.storage.local.get(["language"], (result) => {
+    if (chrome.runtime.lastError) {
+      console.error("Error retrieving language:", chrome.runtime.lastError);
+    } else {
+      console.log("result................", result);
+      const lang = result.language || "default_language";
+      console.log("Retrieved saved language:", lang);
+
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        const messageToSend = JSON.stringify({ text: message, language: lang });
+        socket.send(messageToSend);
+        console.log("Message sent:", messageToSend);
+      } else {
+        console.warn("WebSocket is not open. Cannot send message:", message);
+      }
+    }
+  });
 };
 
 window.onload = () => {
