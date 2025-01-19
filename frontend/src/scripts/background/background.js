@@ -2,6 +2,7 @@ console.log("Background Script Loaded");
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message received in background.js:", message);
+  console.log("Sender:", sender);
 
   // Perform actions based on the message content
   if (message && message.message) {

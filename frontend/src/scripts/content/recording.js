@@ -20,8 +20,8 @@ export const startSpeechRecognition = () => {
     clearTimeout(restartTimeout);
     restartTimeout = setTimeout(() => {
       recognition.stop();
-      if (message.trim() !== "") {
-        chrome.runtime.sendMessage({ message });
+      if (message && message.trim() !== "") {
+        chrome.runtime.sendMessage({ action: "command", data: { message } });
 
         messageBox.textContent = "Processing...";
 
@@ -30,7 +30,7 @@ export const startSpeechRecognition = () => {
         }, 1000);
       } else {
         messageBox.textContent = "No speech detected. Listening...";
-        recognition.start();
+        // recognition.start();
       }
     }, 2000);
   };
@@ -58,9 +58,9 @@ export const startSpeechRecognition = () => {
   };
 
   recognition.onend = () => {
-    // if (messageBox.textContent.includes("No speech detected")) {
-    //   recognition.start();
-    // }
+    if (messageBox.textContent.includes("No speech detected. Listening...")) {
+      recognition.start();
+    }
   };
 
   // Start recognition and initialize the timeout
