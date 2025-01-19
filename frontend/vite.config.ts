@@ -17,6 +17,12 @@ export default defineConfig({
         copyFileSync("manifest.json", "dist/manifest.json");
       },
     },
+    {
+      name: "copy-newtab",
+      closeBundle() {
+        copyFileSync("newtab.html", "dist/newtab.html");
+      },
+    },
   ],
   build: {
     rollupOptions: {
