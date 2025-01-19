@@ -1,19 +1,19 @@
-let isProcessing = false;
-
 console.log("Background Script Loaded");
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  console.log("Message Recieved");
-  //   switch (message.action) {
-  //     case "PROCESS_AUDIO":
-  //       processAudio(message.audio);
-  //       break;
-  //     case "RECORDING_STARTED":
-  //       updateExtensionIcon(true);
-  //       break;
-  //     case "RECORDING_ERROR":
-  //       handleRecordingError(message.error);
-  //       break;
-  //   }
-  //   return true;
+  console.log("Message received in background.js:", message);
+
+  // Perform actions based on the message content
+  if (message && message.message) {
+    console.log("Speech result:", message.message);
+
+    // Example: Send a response back to the sender
+    sendResponse({
+      status: "Message received",
+      receivedMessage: message.message,
+    });
+  }
+
+  // Return `true` if the response will be sent asynchronously
+  return true;
 });
