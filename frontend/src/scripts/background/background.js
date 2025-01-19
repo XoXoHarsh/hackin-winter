@@ -1,4 +1,27 @@
-console.log("Background Script Loaded");
+let socket = null;
+
+function init() {
+  console.log("Background Script Initialized");
+
+  // Initialize WebSocket connection
+  socket = new WebSocket("ws://localhost:8080");
+
+  socket.onopen = () => {
+    console.log("Connected to server");
+  };
+
+  socket.onclose = () => {
+    console.log("WebSocket connection closed");
+  };
+
+  socket.onerror = (error) => {
+    console.error("WebSocket error:", error);
+  };
+
+  socket.onmessage = (event) => {
+    console.log("Message received from server:", event.data);
+  };
+}
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   console.log("Message received in background.js:", message);
