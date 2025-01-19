@@ -1,4 +1,5 @@
 import { showMessageBox } from "./ui/showMessageBox";
+import sendMessage from "../background/response-script";
 
 export const startSpeechRecognition = () => {
   if (!("webkitSpeechRecognition" in window)) {
@@ -21,16 +22,18 @@ export const startSpeechRecognition = () => {
     restartTimeout = setTimeout(() => {
       recognition.stop();
       if (message && message.trim() !== "") {
-        chrome.runtime.sendMessage({ action: "command", data: { message } });
+        chrome.runtime.sendMessage({ message });
 
         messageBox.textContent = "Processing...";
+
+        sendMessage(message);
 
         setTimeout(() => {
           recognition.start();
         }, 1000);
       } else {
         messageBox.textContent = "No speech detected. Listening...";
-        // recognition.start();
+        recognition.start();
       }
     }, 2000);
   };
@@ -58,9 +61,9 @@ export const startSpeechRecognition = () => {
   };
 
   recognition.onend = () => {
-    if (messageBox.textContent.includes("No speech detected. Listening...")) {
-      recognition.start();
-    }
+    // if (messageBox.textContent.includes("No speech detected")) {
+    //   recognition.start();
+    // }
   };
 
   // Start recognition and initialize the timeout
