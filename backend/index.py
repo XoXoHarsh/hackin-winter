@@ -231,8 +231,24 @@ async def websocket_endpoint(websocket: WebSocket):
                 if not isinstance(data, dict):
                     raise ValueError("Invalid input format")
                 
-                text = data.get("text")
-                src_lang = data.get("source_language")
+                text = json_data.get("text")
+                src_lang = json_data.get("language")
+                html = json_data.get("html")
+
+                # print("html: ", html)
+
+                # print(text)
+                # print(src_lang)
+
+                code=""
+
+                for lang, cs_cd in SUPPORTED_LANGUAGES.items():
+                    # print(lang)
+                    # print(cs_cd)
+                    if lang == src_lang:
+                     code = cs_cd
+
+                # print ("code is: ", code)
                 
                 if not text or not src_lang:
                     raise ValueError("Missing required fields: 'text' and 'source_language'")
@@ -241,10 +257,21 @@ async def websocket_endpoint(websocket: WebSocket):
                     raise ValueError(f"Unsupported language code: {src_lang}")
                 
                 # Process the translation
-                result = await translate_to_english_via_hindi(text, src_lang)
+                result = await translate_to_english_via_hindi(text, code)
+                print("result is: ", result)
                 
+                # modify result such that there is one more variable name type called text
+                result['type'] = "translation"
+                # result = {'status': 'success', type:'translation', 'data': {'original': 'Hindi English', 'hindi': 'हिंदी अंग्रेज़ी ', 'english': 'Hindi English'}}
+
                 # Send response back to client
                 await websocket.send_json(result)
+
+
+                # gemini call to get commands
+
+
+                # await websocket.send_json(gemini response) type == command
                 
             except Exception as e:
                 error_response = {
