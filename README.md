@@ -53,12 +53,6 @@ cd backend
 pip install -r requirements.txt
 ```
 
-4. Load the extension in Chrome:
-
-- Open Chrome and go to chrome://extensions/
-- Enable Developer Mode
-- Click "Load unpacked"
-- Select the dist folder from the frontend directory
 
 ## Usage
 
@@ -76,12 +70,26 @@ pip install -r requirements.txt
 ## Development Setup
 
 1. Frontend development:
-
+   
 ```bash
 cd frontend
-npm run dev
 ```
+Build the frontend to create the `dist` folder:
 
+   ```bash
+    npm run build
+   ```
+2. Add the Extension to the Browser
+
+1. Open your browser and navigate to the extensions page:
+   - For Chrome: `chrome://extensions`
+   - For Brave: `brave://extensions`
+2. Enable **Developer Mode** (usually found in the top right corner).
+3. Click on **Load Unpacked**.
+4. Select the `dist` folder generated in the frontend directory.
+5. The extension is now added and ready to use.
+
+   
 2. Backend development:
 
 ```bash
@@ -91,19 +99,7 @@ python index.py
 
 ## Architecture
 
-1. Voice Capture: Uses Web Audio API to capture voice input from the user's microphone
-
-2. Translation Pipeline:
-
-- Audio capture → Text (Speech-to-Text)
-- Indic language → English (AI4Bharat Translation)
-- Command interpretation (Gemini AI)
-- Browser automation execution
-
-3. Real-time Communication:
-
-- WebSocket connection between frontend and backend
-- Instant command execution feedback
+![System Architecture 2](https://github.com/user-attachments/assets/56d3e372-5ea7-4f9f-941e-1c09249b4d95)
 
 ## Acknowledgments
 
