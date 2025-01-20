@@ -11,7 +11,7 @@ body {
 .app-root {
   width: 320px;
   margin: auto;
-  min-height: 94vh;
+  min-height: fit-content;
   background: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 12px;
@@ -154,4 +154,71 @@ body {
 
 .language-text {
   font-size: 16px;
+}
+
+.main-container {
+  font-family: "Arial", sans-serif;
+  padding: 10px;
+  max-width: 800px;
+  margin: auto;
+  background: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.voice-controls {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.language-text {
+  font-size: 1.2rem;
+  color: #333;
+}
+
+.label {
+  font-weight: bold;
+  color: #555;
+}
+
+.highlight {
+  color: #4f46e5;
+}
+
+.commands-container {
+  background: #fff;
+  padding: 10px 0px;
+  border-radius: 8px;
+  /* border: 1px solid #e0e0e0; */
+}
+
+.commands-header {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #4f46e5;
+}
+
+.commands-list {
+  /* list-style: none; */
+  padding: 0;
+}
+
+.command-item {
+  /* margin-bottom: 10px; */
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.3s;
+}
+
+.command-item:hover {
+  background-color: #f1f8ff;
+}
+
+.command-title {
+  font-weight: bold;
+  color: #333;
+}
+
+.command-description {
+  color: #666;
 }
