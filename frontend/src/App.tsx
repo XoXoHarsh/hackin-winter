@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Settings, Mic, X } from "lucide-react";
+import { Settings, X } from "lucide-react";
 import "./App.css";
 
 // Modal Component
@@ -25,49 +25,55 @@ const Modal: React.FC<ModalProps> = ({ title, children, onClose }) => (
 
 const App: React.FC = () => {
   const [showLanguageSelect, setShowLanguageSelect] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState("English");
-  const [micPermission, setMicPermission] = useState(false);
-  const [isListening, setIsListening] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("");
 
   const languages = ["English", "Hindi", "Gujarati", "Bengali", "Marathi"];
-  // const commands = [
-  //   { command: "Open tab", description: "Opens a new tab" },
-  //   { command: "Scroll up", description: "Scrolls the page up" },
-  // ];
+  const commands = [
+    {
+      command: "Select your language from settings",
+      description: "You can choose the language you prefer to interact in.",
+    },
+    {
+      command: "Speak in your natural language",
+      description: "The application will understand and respond accordingly.",
+    },
+    {
+      command: "Following tasks can be performed",
+      description:
+        "Explore various commands like opening tabs, scrolling, and more.",
+    },
+  ];
+
+  const setLanguageToLocalStorage = (lang: string) => {
+    chrome.storage.local.set({ ["language"]: lang }, () => {
+      if (chrome.runtime.lastError) {
+        console.error("Error saving language:", chrome.runtime.lastError);
+      } else {
+        setSelectedLanguage(lang);
+      }
+    });
+  };
+
+  const getLanguagefromLocalStorage = () => {
+    chrome.storage.local.get(["language"], (result) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error retrieving language:", chrome.runtime.lastError);
+      } else {
+        setSelectedLanguage(result?.language || "English");
+      }
+    });
+  };
 
   useEffect(() => {
-    const saveMessageToLocalStorage = () => {
-      chrome.storage.local.set({ language: selectedLanguage }, () => {
-        if (chrome.runtime.lastError) {
-          console.error("Error saving language:", chrome.runtime.lastError);
-        } else {
-          console.log("Language saved:", selectedLanguage);
-        }
-      });
-    };
-
-    saveMessageToLocalStorage();
-  }, [selectedLanguage]);
-
-  const requestMicPermission = async () => {
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      setMicPermission(true);
-    } catch {
-      alert("Mic permission denied");
-    }
-  };
+    getLanguagefromLocalStorage();
+  }, []);
 
   return (
     <div className="app-root">
-      {/* Header */}
       <header className="app-header">
         <div className="header-content">
           <h1 className="app-title">Voice Commander</h1>
           <div className="header-buttons">
-            {/* <button className="icon-button" onClick={() => setShowHelp(true)}>
-              <HelpCircle size={22} />
-            </button> */}
             <button
               className="icon-button"
               onClick={() => setShowLanguageSelect(true)}
@@ -78,19 +84,6 @@ const App: React.FC = () => {
         </div>
       </header>
 
-      {/* Modals */}
-      {/* {showHelp && (
-        <Modal title="Available Commands" onClose={() => setShowHelp(false)}>
-          <ul className="commands-list">
-            {commands.map((cmd, idx) => (
-              <li key={idx}>
-                <strong>{cmd.command}</strong>: {cmd.description}
-              </li>
-            ))}
-          </ul>
-        </Modal>
-      )} */}
-
       {showLanguageSelect && (
         <Modal
           title="Select Language"
@@ -100,7 +93,7 @@ const App: React.FC = () => {
             {languages.map((lang) => (
               <button
                 key={lang}
-                onClick={() => setSelectedLanguage(lang)}
+                onClick={() => setLanguageToLocalStorage(lang)}
                 className={`language-button ${
                   lang === selectedLanguage ? "selected" : ""
                 }`}
@@ -112,31 +105,26 @@ const App: React.FC = () => {
         </Modal>
       )}
 
-      {/* Main Content */}
       <main className="main-container">
-        {!micPermission ? (
-          <div className="mic-access">
-            <Mic size={40} />
-            <p>Enable Microphone Access</p>
-            <button className="primary-button" onClick={requestMicPermission}>
-              Enable
-            </button>
-          </div>
-        ) : (
-          <div className="voice-controls">
-            <button
-              className={`primary-button ${
-                isListening ? "stop-listening" : ""
-              }`}
-              onClick={() => setIsListening(!isListening)}
-            >
-              {isListening ? "Stop Listening" : "Start Listening"}
-            </button>
-            <p className="language-text">
-              Selected Language: <strong>{selectedLanguage}</strong>
-            </p>
-          </div>
-        )}
+        <div className="voice-controls">
+          <p className="language-text">
+            <span className="label">Selected Language:</span>{" "}
+            <strong className="highlight">{selectedLanguage}</strong>
+          </p>
+        </div>
+        <div className="commands-container">
+          <h3 className="commands-header">Instructions</h3>
+          <ul className="commands-list">
+            {commands.map((cmd, idx) => (
+              <li key={idx} className="command-item">
+                <span className="command-title">{cmd.command} :</span>
+                <br />
+                <br />
+                <span className="command-description">{cmd.description}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </main>
     </div>
   );
