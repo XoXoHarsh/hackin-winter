@@ -47,8 +47,12 @@ const initializeWebSocket = (data1) => {
     });
 
     if (data && data.status === "success") {
-      data1.flag = false;
-      updateMessageBox(data.data.lang_key);
+      if (data.type === "translation") {
+        data1.flag = false;
+        updateMessageBox(data.data.hindi);
+      } else if (data.type === "command") {
+        console.log("Command received:", data.data);
+      }
     } else {
       updateMessageBox("Error: " + (data.message || "Unknown error"));
     }
@@ -72,7 +76,7 @@ const updateMessageBox = (newMessage) => {
   }
 };
 
-const sendMessage = (message) => {
+const sendMessage = (message, html) => {
   chrome.storage.local.get(["language"], (result) => {
     if (chrome.runtime.lastError) {
       console.error("Error retrieving language:", chrome.runtime.lastError);
@@ -82,9 +86,14 @@ const sendMessage = (message) => {
       console.log("Retrieved saved language:", lang);
 
       if (socket && socket.readyState === WebSocket.OPEN) {
-        const messageToSend = JSON.stringify({ text: message, language: lang });
+        const messageToSend = JSON.stringify({
+          text: message,
+          language: lang,
+          html,
+        });
         socket.send(messageToSend);
-        console.log("Message sent:", messageToSend);
+        const messag = JSON.parse(messageToSend);
+        console.log("Message sent:", messag.text, messag.language);
       } else {
         console.warn("WebSocket is not open. Cannot send message:", message);
       }

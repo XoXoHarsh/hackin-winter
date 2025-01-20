@@ -25,11 +25,10 @@ export const startSpeechRecognition = (data) => {
         flag = true;
         if (data.flag !== true) {
           data.flag = true;
-          sendMessage(message);
+          const html = document.body.innerHTML;
+          sendMessage(message, html);
         }
         messageBox.textContent = "Processing...";
-
-        // sendMessage(message);
 
         setInterval(() => {
           if (data.flag === false) {
@@ -42,7 +41,10 @@ export const startSpeechRecognition = (data) => {
         }, 1000);
       } else {
         messageBox.textContent = "No speech detected. Listening...";
-        recognition.start();
+        if (data.flag === false) {
+          recognition.start();
+        }
+        // recognition.start();
       }
     }, 2000);
   };
