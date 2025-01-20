@@ -8,12 +8,14 @@ export const showMessageBox = (message) => {
     top: "0",
     left: "0",
     width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
     color: "white",
     padding: "15px",
     textAlign: "center",
     zIndex: "9999",
     fontFamily: "Arial, sans-serif",
+    height: "50px",
+    fontSize: "2rem",
   });
 
   // Set the message text

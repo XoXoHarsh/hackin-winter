@@ -1,6 +1,18 @@
 let socket;
 let floatingBox;
 
+import {
+  closeTab,
+  goBack,
+  goForward,
+  openNewTab,
+  reloadPage,
+  scrollDown,
+  scrollUp,
+  clickOnElement,
+  typeOnTheInputBox,
+} from "../content/command";
+
 const showResponseBox = (message) => {
   floatingBox = document.createElement("div");
 
@@ -15,6 +27,8 @@ const showResponseBox = (message) => {
     textAlign: "center",
     zIndex: "9999",
     fontFamily: "Arial, sans-serif",
+    height: "100px",
+    fontSize: "2rem",
   });
 
   floatingBox.textContent = message;
@@ -44,21 +58,44 @@ const initializeWebSocket = (data1) => {
       } else {
         lang_key = (result?.language || "english").toLowerCase();
         console.log("lang Key............", lang_key);
+        console.log(data.status);
         if (data && data.status === "success") {
           if (data.type === "translation") {
-            data1.flag = false;
             if (lang_key === "english") {
               updateMessageBox(data.data.english);
             } else {
               updateMessageBox(data.data.hindi);
             }
           } else if (data.type === "command") {
+            console.log("inside command type");
+            if (data.error) {
+              console.error("Error processing the command:", data.error);
+            } else if (data.action === "openNewTab") {
+              console.log("openNewTab............", data.arguments.url);
+              openNewTab(data.arguments.url);
+            } else if (data.action === "scrollDown") {
+              scrollDown();
+            } else if (data.action === "scrollUp") {
+              scrollUp();
+            } else if (data.action === "goBack") {
+              goBack();
+            } else if (data.action === "goForward") {
+              goForward();
+            } else if (data.action === "reloadPage") {
+              reloadPage();
+            } else if (data.action === "closeTab") {
+              closeTab();
+            } else if (data.action === "typeOnTheInputBox") {
+              typeOnTheInputBox(data.arguments.className, data.arguments.text);
+            } else if (data.action === "clickOnElement") {
+              clickOnElement(data.arguments.id, data.arguments.className);
+            }
             console.log("Command received:", data.data);
+            data1.flag = false;
           }
         } else {
           updateMessageBox("Error: " + (data.message || "Unknown error"));
         }
-        data1.flag = false;
       }
     });
   };

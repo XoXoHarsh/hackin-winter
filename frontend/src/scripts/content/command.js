@@ -21,6 +21,7 @@ export const clickOnElement = (id, className) => {
   if (id) {
     document.getElementById(id).click();
   } else if (className) {
+    console.log(document.getElementsByClassName(className));
     document.getElementsByClassName(className)[0].click();
   }
 };
@@ -41,8 +42,9 @@ export const reloadPage = () => {
 };
 
 export const openNewTab = (url) => {
-  console.log("Opening new tab");
-  window.open(url, "_blank");
+  // console.log("Opening new tab");
+  // window.open(url, "_blank");
+  window.location.href = url;
 };
 
 export const closeTab = () => {

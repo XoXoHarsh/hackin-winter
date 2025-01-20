@@ -5,6 +5,7 @@ import asyncio
 import torch
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 from IndicTransToolkit import IndicProcessor
+from gemini import get_command_from_html
 
 
 app = FastAPI()
@@ -240,6 +241,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 text = json_data.get("text")
                 src_lang = json_data.get("language")
+                html = json_data.get("html")
 
                 # print(text)
                 # print(src_lang)
@@ -267,6 +269,12 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Send response back to client
                 result["type"] = "translation"
                 await websocket.send_json(result)
+                
+                res = get_command_from_html(html, text)
+                res["status"] = "success"
+                res["type"] = "command"
+                print(res)
+                await websocket.send_json(res)
                 
             except Exception as e:
                 error_response = {
