@@ -24,8 +24,8 @@ const showResponseBox = (message) => {
   return floatingBox;
 };
 
-const initializeWebSocket = (url) => {
-  socket = new WebSocket(url);
+const initializeWebSocket = (data1) => {
+  socket = new WebSocket(data1.url);
 
   socket.onopen = () => {
     console.log("WebSocket connected");
@@ -36,10 +36,12 @@ const initializeWebSocket = (url) => {
     const data = JSON.parse(event.data);
     console.log("data.............", data);
     if (data && data.status === "success") {
-      updateMessageBox(data.data.english);
+      data1.flag = false;
+      updateMessageBox(data.data.hindi);
     } else {
       updateMessageBox("Error: " + (data.message || "Unknown error"));
     }
+    data1.flag = false;
   };
 
   socket.onerror = (error) => {
@@ -79,11 +81,5 @@ const sendMessage = (message) => {
   });
 };
 
-window.onload = () => {
-  showResponseBox("Connecting to WebSocket...");
-
-  initializeWebSocket("ws://localhost:8000/ws");
-};
-
 export default sendMessage;
-export { showResponseBox };
+export { showResponseBox, initializeWebSocket };

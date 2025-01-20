@@ -1,10 +1,19 @@
 import { startSpeechRecognition } from "./recording";
-import { showResponseBox } from "../background/response-script";
+import {
+  showResponseBox,
+  initializeWebSocket,
+} from "../background/response-script";
+
+globalData = {
+  url: "ws://localhost:8000/ws",
+  flag: false,
+};
 
 const init = async () => {
   console.log("Content Script Loaded");
-  startSpeechRecognition();
-  showResponseBox();
+  startSpeechRecognition(globalData);
+  showResponseBox("Connecting to WebSocket...");
+  initializeWebSocket(globalData);
 };
 
 // Run initialization when DOM is ready
