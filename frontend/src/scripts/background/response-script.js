@@ -43,20 +43,24 @@ const initializeWebSocket = (data1) => {
         console.error("Error retrieving language:", chrome.runtime.lastError);
       } else {
         lang_key = (result?.language || "english").toLowerCase();
+        console.log("lang Key............", lang_key);
+        if (data && data.status === "success") {
+          if (data.type === "translation") {
+            data1.flag = false;
+            if (lang_key === "english") {
+              updateMessageBox(data.data.english);
+            } else {
+              updateMessageBox(data.data.hindi);
+            }
+          } else if (data.type === "command") {
+            console.log("Command received:", data.data);
+          }
+        } else {
+          updateMessageBox("Error: " + (data.message || "Unknown error"));
+        }
+        data1.flag = false;
       }
     });
-
-    if (data && data.status === "success") {
-      if (data.type === "translation") {
-        data1.flag = false;
-        updateMessageBox(data.data.lang_key);
-      } else if (data.type === "command") {
-        console.log("Command received:", data.data);
-      }
-    } else {
-      updateMessageBox("Error: " + (data.message || "Unknown error"));
-    }
-    data1.flag = false;
   };
 
   socket.onerror = (error) => {
