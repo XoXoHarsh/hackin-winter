@@ -49,7 +49,7 @@ const initializeWebSocket = (data1) => {
     if (data && data.status === "success") {
       if (data.type === "translation") {
         data1.flag = false;
-        updateMessageBox(data.data.hindi);
+        updateMessageBox(data.data.lang_key);
       } else if (data.type === "command") {
         console.log("Command received:", data.data);
       }
