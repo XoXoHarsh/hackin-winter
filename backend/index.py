@@ -240,6 +240,9 @@ async def websocket_endpoint(websocket: WebSocket):
                 
                 text = json_data.get("text")
                 src_lang = json_data.get("language")
+                html = json_data.get("html")
+
+                # print("html: ", html)
 
                 # print(text)
                 # print(src_lang)
@@ -264,8 +267,18 @@ async def websocket_endpoint(websocket: WebSocket):
                 result = await translate_to_english_via_hindi(text, code)
                 print("result is: ", result)
                 
+                # modify result such that there is one more variable name type called text
+                result['type'] = "translation"
+                # result = {'status': 'success', type:'translation', 'data': {'original': 'Hindi English', 'hindi': 'हिंदी अंग्रेज़ी ', 'english': 'Hindi English'}}
+
                 # Send response back to client
                 await websocket.send_json(result)
+
+
+                # gemini call to get commands
+
+
+                # await websocket.send_json(gemini response) type == command
                 
             except Exception as e:
                 error_response = {
