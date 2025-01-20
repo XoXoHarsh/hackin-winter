@@ -35,9 +35,20 @@ const initializeWebSocket = (data1) => {
   socket.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log("data.............", data);
+
+    let lang_key = "";
+
+    chrome.storage.local.get(["language"], (result) => {
+      if (chrome.runtime.lastError) {
+        console.error("Error retrieving language:", chrome.runtime.lastError);
+      } else {
+        lang_key = (result?.language || "english").toLowerCase();
+      }
+    });
+
     if (data && data.status === "success") {
       data1.flag = false;
-      updateMessageBox(data.data.hindi);
+      updateMessageBox(data.data.lang_key);
     } else {
       updateMessageBox("Error: " + (data.message || "Unknown error"));
     }

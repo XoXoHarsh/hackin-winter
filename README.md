@@ -36,7 +36,7 @@ A Chrome extension that enables hands-free browsing using natural voice commands
 
 ```bash
 git clone https://github.com/XoXoHarsh/HACKIN-WINTER.git
-cd bol-hind
+cd HACKIN-WINTER
 ```
 
 2. Install frontend dependencies:
@@ -85,6 +85,7 @@ npm run dev
 2. Backend development:
 
 ```bash
+cd backend
 python index.py
 ```
 
