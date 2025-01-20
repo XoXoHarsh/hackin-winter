@@ -51,7 +51,6 @@ SUPPORTED_LANGUAGES = {
     "Marathi": "mar_Deva",
     "English": "eng_Latn"
 }
-
 def validate_input(text):
     """Validate the input text"""
     if not text or not text.strip():
@@ -214,7 +213,6 @@ async def process_text(text: str) -> str:
     """
     Process the received text. Replace this with your actual processing logic.
     """
-    # print("helllll")
     await asyncio.sleep(1)  # Simulate processing time
     return f"Processed: {text.upper()}"
 
@@ -226,43 +224,24 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         while True:
             # Receive message from client
-            data = await websocket.receive_text()
-
-            json_data = json.loads(data)
-
-            # print ("data is :", json_data.get("text"))
+            data = await websocket.receive_json()
             
             try:
                 # Validate input data
-                # if not isinstance(data, dict):
-                #     raise ValueError("Invalid input format")
-                # print("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm")
+                if not isinstance(data, dict):
+                    raise ValueError("Invalid input format")
                 
-                text = json_data.get("text")
-                src_lang = json_data.get("language")
-
-                # print(text)
-                # print(src_lang)
-
-                code=""
-
-                for lang, cs_cd in SUPPORTED_LANGUAGES.items():
-                    # print(lang)
-                    # print(cs_cd)
-                    if lang == src_lang:
-                     code = cs_cd
-
-                # print ("code is: ", code)
+                text = data.get("text")
+                src_lang = data.get("source_language")
                 
-                if not text or not src_lang or code=="":
-                    raise ValueError("Missing required fields: 'text' and 'language'")
+                if not text or not src_lang:
+                    raise ValueError("Missing required fields: 'text' and 'source_language'")
                 
-                if code=="":
-                  raise ValueError(f"Unsupported language: {src_lang}")
+                if src_lang not in SUPPORTED_LANGUAGES.values():
+                    raise ValueError(f"Unsupported language code: {src_lang}")
                 
                 # Process the translation
-                result = await translate_to_english_via_hindi(text, code)
-                print("result is: ", result)
+                result = await translate_to_english_via_hindi(text, src_lang)
                 
                 # Send response back to client
                 await websocket.send_json(result)
@@ -273,26 +252,6 @@ async def websocket_endpoint(websocket: WebSocket):
                     "message": str(e)
                 }
                 await websocket.send_json(error_response)
-
-            # data = await websocket.receive_text()
-            
-            # try:
-            #     # Process the received text
-            #     processed_result = await process_text(data)
-                
-            #     # Send response back to client
-            #     response = {
-            #         "status": "success",
-            #         "data": processed_result
-            #     }
-            #     await websocket.send_json(response)
-                
-            # except Exception as e:
-            #     error_response = {
-            #         "status": "error",
-            #         "message": str(e)
-            #     }
-            #     await websocket.send_json(error_response)
                 
     except Exception as e:
         print(f"WebSocket error: {e}")
